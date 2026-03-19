@@ -1,22 +1,24 @@
 'use client';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { useAddToCartMutation } from '@/store/services/cartApi';
 import { addItem } from '@/store/slices/cartSlice';
 import type { Product } from '@/store/services/productApi';
+import type { CartItem } from '@/store/slices/cartSlice';
 
 export default function ProductCard({ product }: { product: Product }) {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((s) => s.cart.items);
-  const [addToCart, { isLoading }] = useAddToCartMutation();
+
   const inCart = cartItems.some((i) => i.product_id === product.id);
 
-  const handleAdd = async () => {
-    try {
-      const result = await addToCart({ product_id: product.id, quantity: 1 }).unwrap();
-      dispatch(addItem(result));
-    } catch (err) {
-      console.error('Failed to add:', err);
-    }
+  const handleAdd = () => {
+    // Create cart item locally for immediate UI update
+    const cartItem: CartItem = {
+      id: Date.now(), // Temporary ID, will be replaced by backend
+      product_id: product.id,
+      quantity: 1,
+      product: product,
+    };
+    dispatch(addItem(cartItem));
   };
 
   return (
@@ -29,14 +31,14 @@ export default function ProductCard({ product }: { product: Product }) {
           <span className="text-lg font-bold text-indigo-600">${product.price}</span>
           <button
             onClick={handleAdd}
-            disabled={isLoading || inCart}
+            disabled={inCart}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
               inCart
                 ? 'bg-green-100 text-green-700 cursor-default'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50'
+                : 'bg-indigo-600 text-white hover:bg-indigo-700'
             }`}
           >
-            {inCart ? '✓ In Cart' : isLoading ? 'Adding...' : 'Add to Cart'}
+            {inCart ? '✓ In Cart' : 'Add to Cart'}
           </button>
         </div>
       </div>

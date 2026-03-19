@@ -87,7 +87,9 @@ class CartController extends Controller
 
         $user = $this->getUser($request);
 
-        foreach ($request->items as $item) {
+        $items = $request->items;
+
+        foreach ($items as $item) {
             if ($item['quantity'] === 0) {
                 Cart::where('user_id', $user->id)
                     ->where('product_id', $item['product_id'])
@@ -99,6 +101,10 @@ class CartController extends Controller
                 );
             }
         }
+
+        $productIds = collect($items)->pluck('product_id');
+
+        Cart::where('user_id', $user->id)->whereNotIn('product_id', $productIds)->delete();
 
         $cart = Cart::with('product')->where('user_id', $user->id)->get();
 

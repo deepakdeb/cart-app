@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { useBatchSyncMutation } from '@/store/services/cartApi';
-import { setCart, setPendingSync } from '@/store/slices/cartSlice';
+import { setPendingSync } from '@/store/slices/cartSlice';
 
 const DEBOUNCE_MS = 1500;
 
@@ -19,16 +19,25 @@ export function useCartSync() {
     if (timerRef.current) clearTimeout(timerRef.current);
 
     timerRef.current = setTimeout(async () => {
-      const payload = items.map((i) => ({
-        product_id: i.product_id,
-        quantity:   i.quantity,
-      }));
+      const payload = items
+        .filter((i) => i.product_id && i.quantity > 0) // Filter out invalid items
+        .map((i) => ({
+          product_id: i.product_id,
+          quantity:   i.quantity,
+        }));
+      
+      if (payload.length === 0) {
+        dispatch(setPendingSync(false));
+        return;
+      }
+      
       try {
-        const result = await batchSync({ items: payload }).unwrap();
-        dispatch(setCart(result.data));
+        await batchSync({ items: payload }).unwrap();
         dispatch(setPendingSync(false));
       } catch (err) {
         console.error('Cart sync failed:', err);
+        // Optionally revert pendingSync or show error
+        dispatch(setPendingSync(false));
       }
     }, DEBOUNCE_MS);
 
