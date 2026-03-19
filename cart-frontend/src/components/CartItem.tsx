@@ -16,15 +16,15 @@ export default function CartItem({ item }: { item: CartItemType }) {
       <div className="flex items-center gap-2">
         <button
           onClick={() => dispatch(decrementItem(item.product_id))}
-          className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 font-bold text-lg transition"
+          className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 font-bold text-lg transition text-gray-600"
         >−</button>
-        <span className="w-8 text-center font-semibold">{item.quantity}</span>
+        <span className="w-8 text-center font-semibold text-gray-600">{item.quantity}</span>
         <button
           onClick={() => dispatch(incrementItem(item.product_id))}
-          className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 font-bold text-lg transition"
+          className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 font-bold text-lg transition text-gray-600"
         >+</button>
       </div>
-      <span className="font-semibold w-20 text-right">
+      <span className="font-semibold w-20 text-right text-gray-600">
         ${(item.product.price * item.quantity).toFixed(2)}
       </span>
       <button

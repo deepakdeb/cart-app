@@ -36,5 +36,5 @@ export function useCartSync() {
     }, DEBOUNCE_MS);
 
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [items, pendingSync, user]);
+  }, [items, pendingSync, user, batchSync, dispatch]);
 }
