@@ -16,9 +16,10 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   pendingSync: boolean;
+  loading: boolean;
 }
 
-const initialState: CartState = { items: [], pendingSync: false };
+const initialState: CartState = { items: [], pendingSync: false, loading: true };
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -26,6 +27,10 @@ const cartSlice = createSlice({
   reducers: {
     setCart(state, action: PayloadAction<CartItem[]>) {
       state.items = action.payload;
+      state.loading = false;
+    },
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.loading = action.payload;
     },
     incrementItem(state, action: PayloadAction<number>) {
       const item = state.items.find((i) => i.product_id === action.payload);
@@ -61,7 +66,7 @@ const cartSlice = createSlice({
 });
 
 export const {
-  setCart, incrementItem, decrementItem,
+  setCart, setLoading, incrementItem, decrementItem,
   removeItem, addItem, setPendingSync,
 } = cartSlice.actions;
 export default cartSlice.reducer;

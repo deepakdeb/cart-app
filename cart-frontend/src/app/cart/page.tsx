@@ -11,6 +11,7 @@ export default function CartPage() {
   useLoadCart();
   useCartSync();
   const items = useAppSelector((s) => s.cart.items);
+  const loading = useAppSelector((s) => s.cart.loading);
   const total = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
 
   return (
@@ -18,7 +19,14 @@ export default function CartPage() {
       <Navbar />
       <main className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">Your Cart</h1>
-        {items.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-20">
+            <div className="inline-block">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+            <p className="text-gray-500 mt-4">Loading your cart...</p>
+          </div>
+        ) : items.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
             <p className="text-5xl mb-4">🛒</p>
             <p className="text-lg">Your cart is empty.</p>
