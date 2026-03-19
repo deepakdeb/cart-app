@@ -20,23 +20,17 @@ export function useCartSync() {
 
     timerRef.current = setTimeout(async () => {
       const payload = items
-        .filter((i) => i.product_id && i.quantity > 0) // Filter out invalid items
+        .filter((i) => i.product_id && i.quantity > 0)
         .map((i) => ({
           product_id: i.product_id,
           quantity:   i.quantity,
         }));
-      
-      if (payload.length === 0) {
-        dispatch(setPendingSync(false));
-        return;
-      }
-      
+
       try {
         await batchSync({ items: payload }).unwrap();
         dispatch(setPendingSync(false));
       } catch (err) {
         console.error('Cart sync failed:', err);
-        // Optionally revert pendingSync or show error
         dispatch(setPendingSync(false));
       }
     }, DEBOUNCE_MS);

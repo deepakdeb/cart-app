@@ -79,13 +79,24 @@ class CartController extends Controller
     // POST /api/cart/batch  ← for debounced sync
     public function batch(Request $request): JsonResponse
     {
+        $items = $request->items;
+        $user = $this->getUser($request);
+
+        if(is_array($items) && count($items) == 0){
+            Cart::where('user_id', $user->id)->delete();
+
+            $cart = Cart::with('product')->where('user_id', $user->id)->get();
+
+            return response()->json(['success' => true, 'data' => $cart]);
+        }
+
         $request->validate([
             'items'              => 'required|array',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity'   => 'required|integer|min:0',
         ]);
 
-        $user = $this->getUser($request);
+        
 
         $items = $request->items;
 

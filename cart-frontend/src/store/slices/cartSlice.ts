@@ -17,9 +17,15 @@ interface CartState {
   items: CartItem[];
   pendingSync: boolean;
   loading: boolean;
+  lastLocalUpdate: number;
 }
 
-const initialState: CartState = { items: [], pendingSync: false, loading: true };
+const initialState: CartState = {
+  items: [],
+  pendingSync: false,
+  loading: true,
+  lastLocalUpdate: Date.now(),
+};
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -28,13 +34,18 @@ const cartSlice = createSlice({
     setCart(state, action: PayloadAction<CartItem[]>) {
       state.items = action.payload;
       state.loading = false;
+      state.lastLocalUpdate = Date.now();
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },
     incrementItem(state, action: PayloadAction<number>) {
       const item = state.items.find((i) => i.product_id === action.payload);
-      if (item) { item.quantity += 1; state.pendingSync = true; }
+      if (item) {
+        item.quantity += 1;
+        state.pendingSync = true;
+        state.lastLocalUpdate = Date.now();
+      }
     },
     decrementItem(state, action: PayloadAction<number>) {
       const item = state.items.find((i) => i.product_id === action.payload);
@@ -44,11 +55,13 @@ const cartSlice = createSlice({
           state.items = state.items.filter((i) => i.product_id !== action.payload);
         }
         state.pendingSync = true;
+        state.lastLocalUpdate = Date.now();
       }
     },
     removeItem(state, action: PayloadAction<number>) {
-      state.items       = state.items.filter((i) => i.product_id !== action.payload);
+      state.items = state.items.filter((i) => i.product_id !== action.payload);
       state.pendingSync = true;
+      state.lastLocalUpdate = Date.now();
     },
     addItem(state, action: PayloadAction<CartItem>) {
       const existing = state.items.find((i) => i.product_id === action.payload.product_id);
@@ -58,6 +71,7 @@ const cartSlice = createSlice({
         state.items.push(action.payload);
       }
       state.pendingSync = true;
+      state.lastLocalUpdate = Date.now();
     },
     setPendingSync(state, action: PayloadAction<boolean>) {
       state.pendingSync = action.payload;
@@ -66,7 +80,13 @@ const cartSlice = createSlice({
 });
 
 export const {
-  setCart, setLoading, incrementItem, decrementItem,
-  removeItem, addItem, setPendingSync,
+  setCart,
+  setLoading,
+  incrementItem,
+  decrementItem,
+  removeItem,
+  addItem,
+  setPendingSync,
 } = cartSlice.actions;
+
 export default cartSlice.reducer;
