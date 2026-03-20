@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<User>
+ * @extends Factory<Product>
  */
-class UserFactory extends Factory
+class ProductFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,10 +18,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'firebase_uid' => fake()->uuid(),
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'avatar' => fake()->imageUrl(),
+            'name' => fake()->word(),
+            'description' => fake()->sentence(),
+            'price' => fake()->randomFloat(2, 10, 100),
+            'image' => fake()->imageUrl(),
         ];
     }
 }
