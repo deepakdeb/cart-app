@@ -22,7 +22,7 @@ Place Firebase service account JSON at `storage/app/firebase-credentials.json`.
 ```bash
 cd cart-frontend
 npm install
-cp .env.local.example .env.local
+cp .env.example .env.local
 # Fill in Firebase config values
 npm run dev
 ```
@@ -37,7 +37,6 @@ npm run dev
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | GET | /api/products | ✓ | List all products |
-| GET | /api/products/:id | ✓ | Get single product |
 | GET | /api/cart | ✓ | Get user's cart |
 | POST | /api/cart | ✓ | Add item to cart |
 | PUT | /api/cart/:id | ✓ | Update item quantity |
