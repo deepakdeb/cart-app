@@ -36,7 +36,7 @@ npm run dev
 ## API Endpoints
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| GET | /api/products | ✓ | List all products |
+| GET | /api/products |   | List all products |
 | GET | /api/cart | ✓ | Get user's cart |
 | POST | /api/cart | ✓ | Add item to cart |
 | PUT | /api/cart/:id | ✓ | Update item quantity |
